@@ -25,6 +25,7 @@ class ChamberDataRetriever {
       if (data is! int) {
         chamberData.readTemperature = data["sondaTemp"];
         //chamberData.setTemperature;
+
         chamberData.frigoRelay = data["frigo"];
         chamberData.stufaRelay = data["stufa"];
         chamberData.localIp = data["localIP"];
