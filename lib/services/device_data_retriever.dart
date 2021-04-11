@@ -23,15 +23,14 @@ class DevicesDataRetriever {
         if (device.online == true) {
           var response = await NetworkHelper().getDevicesResources(device.id);
           if (response is! int) {
-            print(response);
             var result = jsonDecode(response);
-            print(result);
             device.readTemperature = result['readTemp'].toDouble();
             device.setTemperature = result['setTemp'].toDouble();
             device.coldRelay = result['frigo'];
             device.hotRelay = result['stufa'];
             device.localIp = result['localIP'];
             device.probeFail = result['SondeFail'];
+            device.power = result['PowerState'];
           } else {
             //TODO consider error
           }
@@ -39,8 +38,41 @@ class DevicesDataRetriever {
       }
       return devicesList;
     } else {
-      print(result);
       //TODO consider error
+    }
+  }
+
+  Future setDeviceTemperature({DeviceData device, double temperature}) async {
+    var response = await NetworkHelper().setDataTemperature(
+      deviceId: device.id,
+      temperature: temperature,
+    );
+    if (response is! int) {
+      var result = jsonDecode(response);
+      if (temperature == result['out']['setTemp'].toDouble()) {
+        device.setTemperature = result['out']['setTemp'].toDouble();
+        return true;
+      } else
+        return false;
+    } else {
+      //TODO handle error
+    }
+  }
+
+  Future togglePower(DeviceData device) async {
+    var response = await NetworkHelper().setPower(
+      deviceId: device.id,
+      power: !device.power,
+    );
+    if (response is! int) {
+      var result = jsonDecode(response);
+      if (!device.power == result['out']['PowerState']) {
+        device.power = result['out']['PowerState'];
+        return true;
+      } else
+        return false;
+    } else {
+      //TODO handle error
     }
   }
 }

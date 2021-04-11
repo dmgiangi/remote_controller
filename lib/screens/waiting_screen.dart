@@ -9,11 +9,35 @@ class WaitingScreen extends StatefulWidget {
   _WaitingScreenState createState() => _WaitingScreenState();
 }
 
-class _WaitingScreenState extends State<WaitingScreen> {
+class _WaitingScreenState extends State<WaitingScreen>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    state == AppLifecycleState.resumed
+        ? Provider.of<DevicesModel>(context, listen: false).startTimer()
+        : Provider.of<DevicesModel>(context, listen: false).cancelTimer();
+    state == AppLifecycleState.resumed
+        ? print('app visibile')
+        : print('app non visibile');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Provider.of<DevicesModel>(context).ready == false
-        ? LoadingScreen()
-        : ControllerScreen();
+    return Consumer<DevicesModel>(
+      builder: (context, devices, child) =>
+          devices.ready ? ControllerScreen() : LoadingScreen(),
+    );
   }
 }

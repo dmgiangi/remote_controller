@@ -8,12 +8,11 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(fontFamily: 'Roboto'),
-      home: ChangeNotifierProvider<DevicesModel>(
-        create: (context) => DevicesModel(context),
-        lazy: false,
-        child: WaitingScreen(),
+    return ChangeNotifierProvider<DevicesModel>(
+      create: (context) => DevicesModel(context),
+      lazy: false,
+      child: MaterialApp(
+        home: WaitingScreen(),
       ),
     );
   }

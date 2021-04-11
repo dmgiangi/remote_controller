@@ -4,6 +4,7 @@ class DeviceData {
   String name;
   String description;
   bool online;
+  bool power;
   double readTemperature;
   double setTemperature;
   bool coldRelay;
